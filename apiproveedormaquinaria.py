@@ -1,9 +1,16 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI(title="API Proveedor de Maquinaria (Simulada)")
 
-# Catálogo 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 maquinaria = {
     "sierra_circular": {"nombre": "Sierra circular de mesa", "precio": 450000, "disponible": True, "stock": 5, "garantia_meses": 12},
     "cepilladora":     {"nombre": "Cepilladora eléctrica", "precio": 680000, "disponible": True, "stock": 3, "garantia_meses": 24},
@@ -18,12 +25,10 @@ class SolicitudCotizacion(BaseModel):
 
 @app.get("/proveedor/maquinaria")
 def listar_maquinaria():
-    """Lista todas las máquinas que ofrece el proveedor."""
     return maquinaria
 
 @app.get("/proveedor/maquinaria/{codigo}")
 def consultar_maquina(codigo: str):
-    """Consulta una máquina específica por su código."""
     item = maquinaria.get(codigo)
     if not item:
         raise HTTPException(status_code=404, detail="Máquina no encontrada en el catálogo del proveedor")
@@ -31,7 +36,6 @@ def consultar_maquina(codigo: str):
 
 @app.post("/proveedor/maquinaria/cotizar")
 def cotizar_maquina(solicitud: SolicitudCotizacion):
-    """Simula una cotización/orden de compra de maquinaria."""
     item = maquinaria.get(solicitud.codigo)
     if not item:
         raise HTTPException(status_code=404, detail="Máquina no encontrada")
