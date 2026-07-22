@@ -1,13 +1,20 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="API Proveedor de Barniz/Acabados (Simulada)")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 inventario_acabados = {
-    "barniz": {"precio_litro": 12500, "disponible": True, "stock_litros": 60, "tiempo_entrega_dias": 4},
-    "laca":   {"precio_litro": 15800, "disponible": True, "stock_litros": 35, "tiempo_entrega_dias": 6},
-    "tinte":  {"precio_litro": 9800,  "disponible": True, "stock_litros": 50, "tiempo_entrega_dias": 3},
-    "aceite": {"precio_litro": 18200, "disponible": False, "stock_litros": 0, "tiempo_entrega_dias": None},
+    "natural": {"precio_litro": 0,     "disponible": True, "stock_litros": 999, "tiempo_entrega_dias": 0},
+    "barniz":  {"precio_litro": 12500, "disponible": True, "stock_litros": 60,  "tiempo_entrega_dias": 4},
+    "laca":    {"precio_litro": 15800, "disponible": True, "stock_litros": 35,  "tiempo_entrega_dias": 6},
+    "pintura": {"precio_litro": 9800,  "disponible": True, "stock_litros": 50,  "tiempo_entrega_dias": 3},
 }
 
 @app.get("/proveedor/acabados")
